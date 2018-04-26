@@ -1,0 +1,74 @@
+[
+    {
+        "id": "889c26ef.60dc78",
+        "type": "tab",
+        "label": "MAR Basic Search Example",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "cfbbe79c.4fcf68",
+        "type": "dxl-mar-search",
+        "z": "889c26ef.60dc78",
+        "name": "Search MAR for hosts",
+        "pollInterval": 5,
+        "client": "",
+        "x": 361,
+        "y": 36,
+        "wires": [
+            [
+                "9a53f1cf.16e8c"
+            ]
+        ]
+    },
+    {
+        "id": "ac4b45ae.36e3b",
+        "type": "inject",
+        "z": "889c26ef.60dc78",
+        "name": "Format MAR request",
+        "topic": "",
+        "payload": "[{\"name\":\"HostInfo\",\"outputs\":[\"ip_address\"]}]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 144,
+        "y": 36,
+        "wires": [
+            [
+                "cfbbe79c.4fcf68"
+            ]
+        ]
+    },
+    {
+        "id": "4dcf4bd9.63751c",
+        "type": "debug",
+        "z": "889c26ef.60dc78",
+        "name": "Output host names",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 770,
+        "y": 36,
+        "wires": []
+    },
+    {
+        "id": "9a53f1cf.16e8c",
+        "type": "function",
+        "z": "889c26ef.60dc78",
+        "name": "Extract host names",
+        "func": "msg.payload = \n    msg.payload.map(function (processEntry) {\n        return processEntry.output[\"HostInfo|ip_address\"]\n    })\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 569,
+        "y": 36,
+        "wires": [
+            [
+                "4dcf4bd9.63751c"
+            ]
+        ]
+    }
+]

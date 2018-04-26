@@ -1,0 +1,119 @@
+[
+    {
+        "id": "502fd913.3056b8",
+        "type": "tab",
+        "label": "MAR Basic Paging Example",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "488ee996.019a88",
+        "type": "inject",
+        "z": "502fd913.3056b8",
+        "name": "Set host to find",
+        "topic": "",
+        "payload": "127.0.0.1",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 123,
+        "y": 32,
+        "wires": [
+            [
+                "b66fd2ce.644c98"
+            ]
+        ]
+    },
+    {
+        "id": "b66fd2ce.644c98",
+        "type": "function",
+        "z": "502fd913.3056b8",
+        "name": "Format MAR request",
+        "func": "msg.conditions = {\n    or: [{\n        and: [{\n            name: 'HostInfo',\n            output: 'ip_address',\n            op: 'EQUALS',\n            value: msg.payload\n        }]\n    }]\n}\nmsg.payload = [{name: 'Processes'}]\nmsg.limit = 5\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 32,
+        "wires": [
+            [
+                "2b161559.477f92"
+            ]
+        ]
+    },
+    {
+        "id": "a1f3251b.775b6",
+        "type": "switch",
+        "z": "502fd913.3056b8",
+        "name": "More results available?",
+        "property": "hasMoreItems",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 286,
+        "y": 113,
+        "wires": [
+            [
+                "2b161559.477f92"
+            ],
+            [
+                "ca16ba57.8524"
+            ]
+        ]
+    },
+    {
+        "id": "ca16ba57.8524",
+        "type": "debug",
+        "z": "502fd913.3056b8",
+        "name": "Output process names",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "processes",
+        "x": 541,
+        "y": 119,
+        "wires": []
+    },
+    {
+        "id": "ad79434a.576f58",
+        "type": "function",
+        "z": "502fd913.3056b8",
+        "name": "Extract process names",
+        "func": "if (!msg.processes) {\n    msg.processes = []\n}\n\nmsg.processes.push(\n    msg.payload.map(function (processEntry) {\n        return processEntry.output[\"Processes|name\"]\n    })\n)\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 31,
+        "wires": [
+            [
+                "a1f3251b.775b6"
+            ]
+        ]
+    },
+    {
+        "id": "2b161559.477f92",
+        "type": "dxl-mar-search",
+        "z": "502fd913.3056b8",
+        "name": "Search MAR for host",
+        "pollInterval": 5,
+        "client": "",
+        "x": 560,
+        "y": 31,
+        "wires": [
+            [
+                "ad79434a.576f58"
+            ]
+        ]
+    }
+]

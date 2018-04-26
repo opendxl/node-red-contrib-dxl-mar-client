@@ -1,0 +1,77 @@
+{
+  "name": "@opendxl/node-red-contrib-dxl-mar-client",
+  "version": "0.1.0",
+  "author": "McAfee, LLC",
+  "description": "McAfee Active Response (MAR) DXL nodes for Node-RED",
+  "license": "Apache-2.0",
+  "keywords": [
+    "opendxl",
+    "dxl",
+    "mcafee",
+    "node-red",
+    "client",
+    "mar"
+  ],
+  "files": [
+    "lib",
+    "nodes",
+    "examples",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "@opendxl/node-red-contrib-dxl": "^0.1.0",
+    "@opendxl/dxl-mar-client": "^0.0.1"
+  },
+  "devDependencies": {
+    "express": "^4.16.2",
+    "jshint": "^2.9.5",
+    "eslint-plugin-html": "^3.2.2",
+    "mocha": "^4.1.0",
+    "nock": "^9.1.6",
+    "node-red": "^0.18.0",
+    "should": "^13.2.1",
+    "sinon": "^4.1.4",
+    "standard": "^10.0.3",
+    "snazzy": "^7.0.0",
+    "supertest": "^3.0.0",
+    "when": "^3.7.8"
+  },
+  "eslintConfig": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/opendxl/node-red-contrib-dxl-mar-client.git"
+  },
+  "node-red": {
+    "nodes": {
+      "dxl-mar-search": "./nodes/dxl-mar-search.js"
+    }
+  },
+  "scripts": {
+    "test": "mocha --recursive",
+    "lint": "npm run lint:jshint && npm run lint:standard",
+    "lint:jshint": "jshint test",
+    "lint:standard": "standard \"**/*.html\" \"**/*.js\" | snazzy",
+    "preci": "npm run lint",
+    "ci": "npm run test"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "globals": [
+      "DXL",
+      "RED",
+      "$"
+    ],
+    "ignore": [
+      "test/node-red-helper.js"
+    ],
+    "plugins": [
+      "html"
+    ]
+  }
+}

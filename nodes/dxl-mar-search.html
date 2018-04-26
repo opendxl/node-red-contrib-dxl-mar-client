@@ -1,0 +1,49 @@
+<script type="text/javascript">
+  RED.nodes.registerType('dxl-mar-search', {
+    category: 'mar operations',
+    defaults: {
+      name: {value: ''},
+      pollInterval: {value: 5, validate: RED.validators.number()},
+      client: {type: 'dxl-client',
+        required: false,
+        validate: function () { return DXL.validators.client(this) }
+      }
+    },
+    color: '#e9e9e9',
+    inputs: 1,
+    outputs: 1,
+    icon: 'mcafee.png',
+    label: function () {
+      return this.name || 'mar search'
+    },
+    labelStyle: function () {
+      return this.name ? 'node_label_italic' : ''
+    },
+    oneditprepare: function () {
+      if (typeof this.pollInterval === 'undefined') {
+        this.pollInterval = 5
+        $('#node-input-pollInterval').val(this.pollInterval)
+      }
+    },
+    paletteLabel: 'mar search'
+  })
+</script>
+
+<script type="text/x-red" data-template-name="dxl-mar-search">
+    <div class="form-row">
+        <label for="node-input-client"><i class="icon-tag"></i> Client</label>
+        <input type="text" id="node-input-client" placeholder="Client">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-pollInterval" style="width: 150px"><i class="fa fa-clock-o"></i> Poll interval</label>
+        <input type="text" id="node-input-pollInterval" style="width: 100px">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="dxl-mar-search">
+    <p>TBD</p>
+</script>
