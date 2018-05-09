@@ -7,7 +7,8 @@
       client: {type: 'dxl-client',
         required: false,
         validate: function () { return DXL.validators.client(this) }
-      }
+      },
+      returnType: {value: 'obj'}
     },
     color: '#e9e9e9',
     inputs: 1,
@@ -41,6 +42,14 @@
     <div class="form-row">
         <label for="node-input-pollInterval" style="width: 150px"><i class="fa fa-clock-o"></i> Poll interval</label>
         <input type="text" id="node-input-pollInterval" style="width: 100px">
+    </div>
+    <div class="form-row">
+        <label for="node-input-returnType"><i class="fa fa-arrow-left"></i> Return</span></label>
+        <select type="text" id="node-input-returnType" style="width:70%;">
+            <option value="txt">a UTF-8 string</option>
+            <option value="bin">a binary buffer</option>
+            <option value="obj">a parsed JSON object</option>
+        </select>
     </div>
 </script>
 

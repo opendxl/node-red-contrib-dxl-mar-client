@@ -1,5 +1,6 @@
 'use strict'
 
+var MessageUtils = require('@opendxl/node-red-contrib-dxl').MessageUtils
 var marClient = require('@opendxl/dxl-mar-client')
 var MarClient = marClient.MarClient
 var ResultsContext = marClient.ResultsContext
@@ -17,7 +18,7 @@ module.exports = function (RED) {
     node.error(errorMessage, msg)
   }
 
-  function getResults (node, msg, resultsContext) {
+  function getResults (node, msg, resultsContext, returnType) {
     if (!msg.hasOwnProperty('offset')) {
       msg.offset = 0
     }
@@ -28,7 +29,8 @@ module.exports = function (RED) {
         function (resultError, searchResult) {
           if (searchResult) {
             msg.offset += searchResult.items.length
-            msg.payload = searchResult.items
+            msg.payload = MessageUtils.objectToReturnType(searchResult.items,
+              returnType)
             msg.hasMoreItems = msg.offset < resultsContext.resultCount
             if (!msg.hasMoreItems) {
               clearSearchResultProperties(msg)
@@ -51,6 +53,8 @@ module.exports = function (RED) {
      */
     this._client = RED.nodes.getNode(nodeConfig.client)
 
+    this._returnType = nodeConfig.returnType || 'obj'
+
     var node = this
 
     this.status({
@@ -67,7 +71,7 @@ module.exports = function (RED) {
           var resultsContext = new ResultsContext(marClient,
             msg.searchId, msg.resultCount, msg.errorCount, msg.errorCount,
             msg.hostCount, msg.subscribedHostCount)
-          getResults(node, msg, resultsContext)
+          getResults(node, msg, resultsContext, node._returnType)
         } else if (msg.hasOwnProperty('payload')) {
           msg.offset = 0
           msg.hasMoreItems = false
@@ -82,7 +86,7 @@ module.exports = function (RED) {
                 msg.subscribedHostCount = resultsContext.subscribedHostCount
                 msg.searchNodeId = node.id
                 if (resultsContext.hasResults) {
-                  getResults(node, msg, resultsContext)
+                  getResults(node, msg, resultsContext, node._returnType)
                 } else {
                   msg.payload = []
                   clearSearchResultProperties(msg)
