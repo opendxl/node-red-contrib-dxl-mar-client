@@ -1,15 +1,15 @@
 [
     {
-        "id": "ee0b5e43.1925d",
+        "id": "96d34608.630cb8",
         "type": "tab",
         "label": "MAR Basic Paging Example",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "cf51aaa6.45e058",
+        "id": "26265580.ec7d4a",
         "type": "inject",
-        "z": "ee0b5e43.1925d",
+        "z": "96d34608.630cb8",
         "name": "Set host to find",
         "topic": "",
         "payload": "127.0.0.1",
@@ -18,34 +18,18 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 123,
-        "y": 32,
+        "x": 120,
+        "y": 40,
         "wires": [
             [
-                "8e2575de.218338"
+                "4c584414.d0851c"
             ]
         ]
     },
     {
-        "id": "8e2575de.218338",
-        "type": "function",
-        "z": "ee0b5e43.1925d",
-        "name": "Format MAR request",
-        "func": "msg.conditions = {\n    or: [{\n        and: [{\n            name: 'HostInfo',\n            output: 'ip_address',\n            op: 'EQUALS',\n            value: msg.payload\n        }]\n    }]\n}\nmsg.payload = [{name: 'Processes'}]\nmsg.limit = 5\nreturn msg",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 320,
-        "y": 32,
-        "wires": [
-            [
-                "e4ce2d14.5fdbb"
-            ]
-        ]
-    },
-    {
-        "id": "e654c3fa.aa2e2",
+        "id": "f857b0cb.3989d",
         "type": "switch",
-        "z": "ee0b5e43.1925d",
+        "z": "96d34608.630cb8",
         "name": "More results available?",
         "property": "hasMoreItems",
         "propertyType": "msg",
@@ -60,21 +44,21 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 286,
-        "y": 113,
+        "x": 250,
+        "y": 140,
         "wires": [
             [
-                "e4ce2d14.5fdbb"
+                "caac115.e3e13f"
             ],
             [
-                "24b27aab.a34006"
+                "335ea6c8.7f782a"
             ]
         ]
     },
     {
-        "id": "24b27aab.a34006",
+        "id": "335ea6c8.7f782a",
         "type": "debug",
-        "z": "ee0b5e43.1925d",
+        "z": "96d34608.630cb8",
         "name": "Output process names",
         "active": true,
         "tosidebar": true,
@@ -82,38 +66,62 @@
         "tostatus": false,
         "complete": "processes",
         "x": 540,
-        "y": 120,
+        "y": 140,
         "wires": []
     },
     {
-        "id": "ddf78540.bddc08",
+        "id": "b4ccc90b.11d7a8",
         "type": "function",
-        "z": "ee0b5e43.1925d",
+        "z": "96d34608.630cb8",
         "name": "Extract process names",
         "func": "if (!msg.processes) {\n    msg.processes = []\n}\n\nmsg.processes.push(\n    msg.payload.map(function (processEntry) {\n        return processEntry.output[\"Processes|name\"]\n    })\n)\n\nreturn msg",
         "outputs": 1,
         "noerr": 0,
         "x": 780,
-        "y": 31,
+        "y": 60,
         "wires": [
             [
-                "e654c3fa.aa2e2"
+                "f857b0cb.3989d"
             ]
         ]
     },
     {
-        "id": "e4ce2d14.5fdbb",
+        "id": "caac115.e3e13f",
         "type": "dxl-mar-search",
-        "z": "ee0b5e43.1925d",
+        "z": "96d34608.630cb8",
         "name": "Search MAR for host",
         "pollInterval": 5,
         "client": "",
+        "projections": "[\n    {\n        \"name\": \"Processes\"\n    }\n]",
+        "limit": "5",
+        "textFilter": "",
+        "sortBy": "Processes|name",
+        "sortDirection": "asc",
         "returnType": "obj",
         "x": 560,
-        "y": 31,
+        "y": 60,
         "wires": [
             [
-                "ddf78540.bddc08"
+                "b4ccc90b.11d7a8"
+            ]
+        ]
+    },
+    {
+        "id": "4c584414.d0851c",
+        "type": "template",
+        "z": "96d34608.630cb8",
+        "name": "Set search conditions",
+        "field": "conditions",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"or\": [{\n        \"and\": [{\n            \"name\": \"HostInfo\",\n            \"output\": \"ip_address\",\n            \"op\": \"EQUALS\",\n            \"value\": \"{{payload}}\"\n        }]\n    }]\n}",
+        "output": "json",
+        "x": 320,
+        "y": 40,
+        "wires": [
+            [
+                "caac115.e3e13f"
             ]
         ]
     }

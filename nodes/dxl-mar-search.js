@@ -1,9 +1,11 @@
 'use strict'
 
-var MessageUtils = require('@opendxl/node-red-contrib-dxl').MessageUtils
+var bootstrap = require('@opendxl/dxl-bootstrap')
+var nodeRedDxl = require('@opendxl/node-red-contrib-dxl')
 var marClient = require('@opendxl/dxl-mar-client')
 var MarClient = marClient.MarClient
 var ResultsContext = marClient.ResultsContext
+var NodeUtils = nodeRedDxl.NodeUtils
 
 module.exports = function (RED) {
   function clearSearchResultProperties (msg) {
@@ -18,7 +20,7 @@ module.exports = function (RED) {
     node.error(errorMessage, msg)
   }
 
-  function getResults (node, msg, resultsContext, returnType) {
+  function getResults (node, nodeConfig, msg, resultsContext) {
     if (!msg.hasOwnProperty('offset')) {
       msg.offset = 0
     }
@@ -29,8 +31,8 @@ module.exports = function (RED) {
         function (resultError, searchResult) {
           if (searchResult) {
             msg.offset += searchResult.items.length
-            msg.payload = MessageUtils.objectToReturnType(searchResult.items,
-              returnType)
+            msg.payload = nodeRedDxl.MessageUtils.objectToReturnType(
+              searchResult.items, node._returnType)
             msg.hasMoreItems = msg.offset < resultsContext.resultCount
             if (!msg.hasMoreItems) {
               clearSearchResultProperties(msg)
@@ -39,7 +41,13 @@ module.exports = function (RED) {
           } else {
             sendError(node, msg, resultError.message)
           }
-        }, msg.offset, msg.limit, msg.textFilter, msg.sortBy, msg.sortDirection)
+        },
+        msg.offset,
+        NodeUtils.valueToNumber(nodeConfig.limit, msg.limit),
+        NodeUtils.defaultIfEmpty(nodeConfig.textFilter, msg.textFilter),
+        NodeUtils.defaultIfEmpty(nodeConfig.sortBy, msg.sortBy),
+        NodeUtils.defaultIfEmpty(nodeConfig.sortDirection, msg.sortDirection)
+      )
     }
   }
 
@@ -55,6 +63,18 @@ module.exports = function (RED) {
 
     this._returnType = nodeConfig.returnType || 'obj'
 
+    var error = null
+
+    this._projections = null
+    if (nodeConfig.projections) {
+      try {
+        this._projections = bootstrap.MessageUtils.jsonToObject(
+          nodeConfig.projections)
+      } catch (err) {
+        error = err
+      }
+    }
+
     var node = this
 
     this.status({
@@ -63,19 +83,31 @@ module.exports = function (RED) {
       text: 'node-red:common.status.disconnected'
     })
 
-    if (this._client) {
+    if (!error && !this._client) {
+      error = 'Missing client configuration'
+    }
+
+    if (error) {
+      this.error(error)
+    } else {
       this._client.registerUserNode(this)
       var marClient = new MarClient(this._client.dxlClient)
+      var pollInterval = NodeUtils.valueToNumber(nodeConfig.pollInterval)
+      if (!isNaN(pollInterval)) {
+        marClient.pollInterval = pollInterval
+      }
       this.on('input', function (msg) {
+        var projections = NodeUtils.defaultIfEmpty(node._projections,
+          msg.payload)
         if (msg.searchNodeId === node.id) {
           var resultsContext = new ResultsContext(marClient,
             msg.searchId, msg.resultCount, msg.errorCount, msg.errorCount,
             msg.hostCount, msg.subscribedHostCount)
-          getResults(node, msg, resultsContext, node._returnType)
-        } else if (msg.hasOwnProperty('payload')) {
+          getResults(node, nodeConfig, msg, resultsContext)
+        } else if (projections) {
           msg.offset = 0
           msg.hasMoreItems = false
-          marClient.search(msg.payload, msg.conditions,
+          marClient.search(projections, msg.conditions,
             function (searchError, resultsContext) {
               delete msg.conditions
               if (resultsContext) {
@@ -86,7 +118,7 @@ module.exports = function (RED) {
                 msg.subscribedHostCount = resultsContext.subscribedHostCount
                 msg.searchNodeId = node.id
                 if (resultsContext.hasResults) {
-                  getResults(node, msg, resultsContext, node._returnType)
+                  getResults(node, nodeConfig, msg, resultsContext)
                 } else {
                   msg.payload = []
                   clearSearchResultProperties(msg)
@@ -97,6 +129,8 @@ module.exports = function (RED) {
               }
             }
           )
+        } else {
+          sendError(node, msg, 'Projections not available in msg.payload')
         }
       })
       this.on('close', function (done) {
@@ -109,8 +143,6 @@ module.exports = function (RED) {
           text: 'node-red:common.status.connected'
         })
       }
-    } else {
-      this.error('Missing client configuration')
     }
   }
 

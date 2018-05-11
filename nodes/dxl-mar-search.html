@@ -8,6 +8,11 @@
         required: false,
         validate: function () { return DXL.validators.client(this) }
       },
+      projections: {value: ''},
+      limit: {value : '', validate: RED.validators.number(true)},
+      textFilter: {value: ''},
+      sortBy: {value: ''},
+      sortDirection: {value: ''},
       returnType: {value: 'obj'}
     },
     color: '#e9e9e9',
@@ -25,6 +30,31 @@
         this.pollInterval = 5
         $('#node-input-pollInterval').val(this.pollInterval)
       }
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-projections-editor',
+        mode: 'ace/mode/json',
+        value: $("#node-input-projections").val()
+      });
+    },
+    oneditsave: function() {
+      $("#node-input-projections").val(this.editor.getValue());
+      this.editor.destroy();
+      delete this.editor;
+    },
+    oneditcancel: function() {
+      this.editor.destroy();
+      delete this.editor;
+    },
+    oneditresize: function(size) {
+      var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+      var height = $("#dialog-form").height();
+      for (var i=0; i<rows.size(); i++) {
+        height -= $(rows[i]).outerHeight(true);
+      }
+      var editorRow = $("#dialog-form>div.node-text-editor-row");
+      height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+      $(".node-text-editor").css("height",height+"px");
+      this.editor.resize();
     },
     paletteLabel: 'mar search'
   })
@@ -40,8 +70,31 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-pollInterval" style="width: 150px"><i class="fa fa-clock-o"></i> Poll interval</label>
-        <input type="text" id="node-input-pollInterval" style="width: 100px">
+        <label for="node-input-projections"><i class="fa fa-file-code-o"></i> Projections</label>
+        <input type="hidden" id="node-input-projections" autofocus="autofocus">
+    </div>
+    <div class="form-row node-text-editor-row">
+        <div style="height: 100px; min-height:50px;" class="node-text-editor" id="node-input-projections-editor" ></div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-limit"><i class="fa fa-tachometer"></i> Limit</label>
+        <input type="text" id="node-input-limit" style="width: 100px">
+    </div>
+    <div class="form-row">
+        <label for="node-input-textFilter"><i class="fa fa-filter"></i> Text filter</label>
+        <input type="text" id="node-input-textFilter" placeholder="Text filter">
+    </div>
+    <div class="form-row">
+        <label for="node-input-sortBy"><i class="fa fa-bars"></i> Sort by</label>
+        <input type="text" id="node-input-sortBy" placeholder="Sort by">
+    </div>
+    <div class="form-row">
+        <label for="node-input-sortDirection"><i class="fa fa-sort"></i> Sort</span></label>
+        <select type="text" id="node-input-sortDirection" style="width:70%;">
+            <option value="">Defer to msg.sortBy property</option>
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
     </div>
     <div class="form-row">
         <label for="node-input-returnType"><i class="fa fa-arrow-left"></i> Return</span></label>
@@ -50,6 +103,10 @@
             <option value="bin">a binary buffer</option>
             <option value="obj">a parsed JSON object</option>
         </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-pollInterval"><i class="fa fa-clock-o"></i> Poll interval</label>
+        <input type="text" id="node-input-pollInterval" style="width: 100px">
     </div>
 </script>
 
