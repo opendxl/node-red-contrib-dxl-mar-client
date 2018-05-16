@@ -1,32 +1,32 @@
 [
     {
-        "id": "ce4148b3.88f028",
+        "id": "ee0ea636.a6a4c8",
         "type": "tab",
         "label": "MAR Basic Search Example",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "769a0bdd.50c9b4",
+        "id": "bd0c70b7.aaadb",
         "type": "dxl-mar-search",
-        "z": "ce4148b3.88f028",
+        "z": "ee0ea636.a6a4c8",
         "name": "Search MAR for hosts",
         "pollInterval": 5,
         "client": "",
         "returnType": "obj",
-        "x": 340,
-        "y": 40,
+        "x": 280,
+        "y": 220,
         "wires": [
             [
-                "f170ba7e.439698"
+                "c1b54574.515d18"
             ]
         ]
     },
     {
-        "id": "dde2adb6.411d",
+        "id": "bbc5481.ea420b8",
         "type": "inject",
-        "z": "ce4148b3.88f028",
-        "name": "Format MAR request",
+        "z": "ee0ea636.a6a4c8",
+        "name": "Specify search projections",
         "topic": "",
         "payload": "[{\"name\":\"HostInfo\",\"outputs\":[\"ip_address\"]}]",
         "payloadType": "json",
@@ -34,41 +34,68 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 130,
+        "x": 150,
         "y": 40,
         "wires": [
             [
-                "769a0bdd.50c9b4"
+                "f4b6b364.65f03"
             ]
         ]
     },
     {
-        "id": "8d8663a9.c77d",
+        "id": "8da16f80.4e2ce",
         "type": "debug",
-        "z": "ce4148b3.88f028",
+        "z": "ee0ea636.a6a4c8",
         "name": "Output host names",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "payload",
-        "x": 750,
-        "y": 40,
+        "x": 590,
+        "y": 320,
         "wires": []
     },
     {
-        "id": "f170ba7e.439698",
+        "id": "c1b54574.515d18",
         "type": "function",
-        "z": "ce4148b3.88f028",
+        "z": "ee0ea636.a6a4c8",
         "name": "Extract host names",
         "func": "msg.payload = \n    msg.payload.map(function (processEntry) {\n        return processEntry.output[\"HostInfo|ip_address\"]\n    })\nreturn msg",
         "outputs": 1,
         "noerr": 0,
-        "x": 550,
-        "y": 40,
+        "x": 370,
+        "y": 320,
         "wires": [
             [
-                "8d8663a9.c77d"
+                "8da16f80.4e2ce"
+            ]
+        ]
+    },
+    {
+        "id": "f4b6b364.65f03",
+        "type": "change",
+        "z": "ee0ea636.a6a4c8",
+        "name": "Set projection request parameter",
+        "rules": [
+            {
+                "t": "set",
+                "p": "projections",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 120,
+        "wires": [
+            [
+                "bd0c70b7.aaadb"
             ]
         ]
     }

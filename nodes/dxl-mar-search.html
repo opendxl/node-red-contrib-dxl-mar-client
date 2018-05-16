@@ -114,8 +114,8 @@
     <p>Executes a search via McAfee Active Response.</p>
     <h3>Inputs</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">object</span></dt>
-        <dd> An array of <code>projections</code>, used to describe the information to collect in the search.</dd>
+        <dt>projections <span class="property-type">object</span></dt>
+        <dd> An array of projections, used to describe the information to collect in the search.</dd>
         <dt class="optional">conditions <span class="property-type">object</span></dt>
         <dd> An object containing the conditions for the search.</dd>
         <dt class="optional">offset <span class="property-type">number</span></dt>
@@ -158,7 +158,7 @@
     <p><i>Client</i> is the configuration node for the DXL client through which the request should be made.
     Click on the pencil icon to add or modify a client configuration.</p>
     <p><i>Name</i> is only used for display purposes in the Node-RED user interface.</p>
-    <p><i>Projections</i> is a JSON-formatted array of objects used to describe the information to collect in the search. If the value is empty, the projections will be derived from the input message's <code>msg.payload</code> property.</p>
+    <p><i>Projections</i> is a JSON-formatted array of objects used to describe the information to collect in the search. If the value is empty, the projections will be derived from the input message's <code>msg.projections</code> property.</p>
     <p><i>Limit</i> is the maximum number of items to return in the results. If the value is empty, the limit will be derived from the input message's <code>msg.limit</code> property.</p>
     <p><i>Text filter</i> is a text based filter used to limit the result (this can be any string). If the value is empty, the limit will be derived from the input message's <code>msg.textFilter</code> property.</p>
     <p><i>Sort by</i> is the field that will be used to sort the results. If the value is empty, the limit will be derived from the input message's <code>msg.sortBy</code> property.</p>

@@ -98,7 +98,7 @@ module.exports = function (RED) {
       }
       this.on('input', function (msg) {
         var projections = NodeUtils.defaultIfEmpty(node._projections,
-          msg.payload)
+          msg.projections)
         if (msg.searchNodeId === node.id) {
           var resultsContext = new ResultsContext(marClient,
             msg.searchId, msg.resultCount, msg.errorCount, msg.errorCount,
@@ -109,6 +109,7 @@ module.exports = function (RED) {
           msg.hasMoreItems = false
           marClient.search(projections, msg.conditions,
             function (searchError, resultsContext) {
+              delete msg.projections
               delete msg.conditions
               if (resultsContext) {
                 msg.searchId = resultsContext.searchId
@@ -130,7 +131,7 @@ module.exports = function (RED) {
             }
           )
         } else {
-          sendError(node, msg, 'Projections not available in msg.payload')
+          sendError(node, msg, 'projections property was not specified')
         }
       })
       this.on('close', function (done) {
