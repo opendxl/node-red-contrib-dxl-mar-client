@@ -115,37 +115,37 @@
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>projections <span class="property-type">object</span></dt>
-        <dd> An array of projections, used to describe the information to collect in the search.</dd>
+        <dd> Array of projections, used to describe the information to collect in the search.</dd>
         <dt class="optional">conditions <span class="property-type">object</span></dt>
-        <dd> An object containing the conditions for the search.</dd>
+        <dd> Object containing the conditions for the search.</dd>
         <dt class="optional">offset <span class="property-type">number</span></dt>
         <dd> Index of the first result item to be returned. This value is <code>0</code> based. Default value: <code>0</code>.</dd>
         <dt class="optional">limit <span class="property-type">number</span></dt>
-        <dd> The maximum number of items to return in the results. Default value: <code>20</code>.</dd>
+        <dd> Maximum number of items to return in the results. Default value: <code>20</code>.</dd>
         <dt class="optional">textFilter <span class="property-type">string</span></dt>
-        <dd> A text based filter to limit the result (this can be any string).</dd>
+        <dd> Text based filter to limit the result (this can be any string).</dd>
         <dt class="optional">sortBy <span class="property-type">string</span></dt>
-        <dd> The field that will be used to sort the results. Default value: <code>count</code>.</dd>
+        <dd> Field that will be used to sort the results. Default value: <code>count</code>.</dd>
         <dt class="optional">sortDirection <span class="property-type">string</span></dt>
         <dd> Valid values are: <code>asc</code> (ascending) and <code>desc</code> (descending). Default value: <code>desc</code>.</dd>
     </dl>
     <h3>Outputs</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">string | object | buffer</span></dt>
-        <dd> An array containing the items found from the search.
-        Through the <i>Return</i> node property, the node can be configured to set the  payload type as a UTF-8 String, an Object parsed from a JSON formatted string, or as a binary Buffer.</dd>
+        <dd> Array containing the items found from the search.
+        Through the <code>Return</code> node property, the node can be configured to set the payload type as a UTF-8 String, an Object parsed from a JSON formatted string, or as a binary Buffer.</dd>
         <dt>hasMoreItems <span class="property-type">boolean</span></dt>
         <dd> <code>true</code> if additional items for the current search could be returned if this node is revisited within the same flow. <code>false</code> if the current message contains items from the last page of search results.</dd>
         <dt>offset <span class="property-type">number</span></dt>
         <dd> Index of the next item to be returned if this node is revisited to return more search results. This value is <code>0</code> based.</dd>
         <dt>resultCount <span class="property-type">number</span></dt>
-        <dd> The total count of the items available in the search results.</dd>
+        <dd> Total count of the items available in the search results.</dd>
         <dt>errorCount <span class="property-type">number</span></dt>
-        <dd> The count of errors that were reported during the search.</dd>
+        <dd> Count of errors that were reported during the search.</dd>
         <dt>hostCount <span class="property-type">number</span></dt>
-        <dd> The count of endpoints that responded to the search.</dd>
+        <dd> Count of endpoints that responded to the search.</dd>
         <dt>subscribedHostCount <span class="property-type">number</span></dt>
-        <dd> The count of endpoints that were connected to the DXL fabric when the search started.</dd>
+        <dd> Count of endpoints that were connected to the DXL fabric when the search started.</dd>
         <dt>searchId</dt>
         <dd> Id assigned by the MAR server to the search operation. This property should be preserved (not changed on or deleted from) the message if this node is revisited to return more search results.</dd>
         <dt>searchNodeId</dt>
@@ -155,17 +155,26 @@
     <p>The DXL client invoking this method must have permission to send messages to the <code>/mcafee/mar/search/api/search</code> topic.
     See the <a href="https://opendxl.github.io/opendxl-client-python/pydoc/marsendauth.html">MAR client authorization documentation</a> for details on authorizing a client to perform MAR searches.</p>
     <h3>Node Properties</h3>
-    <p><i>Client</i> is the configuration node for the DXL client through which the request should be made.
-    Click on the pencil icon to add or modify a client configuration.</p>
-    <p><i>Name</i> is only used for display purposes in the Node-RED user interface.</p>
-    <p><i>Projections</i> is a JSON-formatted array of objects used to describe the information to collect in the search. If the value is empty, the projections will be derived from the input message's <code>msg.projections</code> property.</p>
-    <p><i>Limit</i> is the maximum number of items to return in the results. If the value is empty, the limit will be derived from the input message's <code>msg.limit</code> property.</p>
-    <p><i>Text filter</i> is a text based filter used to limit the result (this can be any string). If the value is empty, the limit will be derived from the input message's <code>msg.textFilter</code> property.</p>
-    <p><i>Sort by</i> is the field that will be used to sort the results. If the value is empty, the limit will be derived from the input message's <code>msg.sortBy</code> property.</p>
-    <p><i>Sort</i> is the direction the search results should be sorted. If the value is set to <code>Defer to msg.sortBy property</code>, the sort direction will be retrieved from the <code>msg.sortDirection</code> property in the input message.
-    <p><i>Return</i> controls the data type for the <code>msg.payload</code> property in the output message.</p>
-    <p>If an error occurs when attempting to convert the payload into the desired data type, the current flow is halted with an error.</p>
-    <p><i>Poll interval</i> controls the number of seconds between poll requests made to the MAR server to determine when a search is complete.</p>
+    <dl class="message-properties">
+        <dt>Client</dt>
+        <dd> Configuration node for the DXL client through which the request should be made. Click on the pencil icon to add or modify a client configuration.</dd>
+        <dt>Name</dt>
+        <dd> Used only for display purposes in the Node-RED user interface.</dd>
+        <dt>Projections</dt>
+        <dd> JSON-formatted array of objects used to describe the information to collect in the search. If the value is empty, the projections will be derived from the input message's <code>msg.projections</code> property.</dd>
+        <dt>Limit</dt>
+        <dd> Maximum number of items to return in the results. If the value is empty, the limit will be derived from the input message's <code>msg.limit</code> property.</dd>
+        <dt>Text filter</dt>
+        <dd> Text based filter used to limit the result (this can be any string). If the value is empty, the limit will be derived from the input message's <code>msg.textFilter</code> property.</dd>
+        <dt>Sort by</dt>
+        <dd> Field that will be used to sort the results. If the value is empty, the limit will be derived from the input message's <code>msg.sortBy</code> property.</dd>
+        <dt>Sort</dt>
+        <dd> Direction the search results should be sorted. If the value is set to <code>Defer to msg.sortBy property</code>, the sort direction will be retrieved from the <code>msg.sortDirection</code> property in the input message.</dd>
+        <dt>Return</dt>
+        <dd> Controls the data type for the <code>msg.payload</code> property in the output message. If an error occurs when attempting to convert the payload into the desired data type, the current flow is halted with an error.</dd>
+        <dt>Poll interval</dt>
+        <dd> Controls the number of seconds between poll requests made to the MAR server to determine when a search is complete.</dd>
+    </dl>
     <h3>Details</h3>
     <p>Execution of a MAR search requires an array of <code>projections</code> and an optional object containing the search <code>conditions</code>.</p>
     <h4>Projections</h4>
