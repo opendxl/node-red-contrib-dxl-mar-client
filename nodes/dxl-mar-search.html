@@ -111,5 +111,137 @@
 </script>
 
 <script type="text/x-red" data-help-name="dxl-mar-search">
-    <p>TBD</p>
+    <p>Executes a search via McAfee Active Response.</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd> An array of <code>projections</code>, used to describe the information to collect in the search.</dd>
+        <dt class="optional">conditions <span class="property-type">object</span></dt>
+        <dd> An object containing the conditions for the search.</dd>
+        <dt class="optional">offset <span class="property-type">number</span></dt>
+        <dd> Index of the first result item to be returned. This value is <code>0</code> based. Default value: <code>0</code>.</dd>
+        <dt class="optional">limit <span class="property-type">number</span></dt>
+        <dd> The maximum number of items to return in the results. Default value: <code>20</code>.</dd>
+        <dt class="optional">textFilter <span class="property-type">string</span></dt>
+        <dd> A text based filter to limit the result (this can be any string).</dd>
+        <dt class="optional">sortBy <span class="property-type">string</span></dt>
+        <dd> The field that will be used to sort the results. Default value: <code>count</code>.</dd>
+        <dt class="optional">sortDirection <span class="property-type">string</span></dt>
+        <dd> Valid values are: <code>asc</code> (ascending) and <code>desc</code> (descending). Default value: <code>desc</code>.</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object | buffer</span></dt>
+        <dd> An array containing the items found from the search.
+        Through the <i>Return</i> node property, the node can be configured to set the  payload type as a UTF-8 String, an Object parsed from a JSON formatted string, or as a binary Buffer.</dd>
+        <dt>hasMoreItems <span class="property-type">boolean</span></dt>
+        <dd> <code>true</code> if additional items for the current search could be returned if this node is revisited within the same flow. <code>false</code> if the current message contains items from the last page of search results.</dd>
+        <dt>offset <span class="property-type">number</span></dt>
+        <dd> Index of the next item to be returned if this node is revisited to return more search results. This value is <code>0</code> based.</dd>
+        <dt>resultCount <span class="property-type">number</span></dt>
+        <dd> The total count of the items available in the search results.</dd>
+        <dt>errorCount <span class="property-type">number</span></dt>
+        <dd> The count of errors that were reported during the search.</dd>
+        <dt>hostCount <span class="property-type">number</span></dt>
+        <dd> The count of endpoints that responded to the search.</dd>
+        <dt>subscribedHostCount <span class="property-type">number</span></dt>
+        <dd> The count of endpoints that were connected to the DXL fabric when the search started.</dd>
+        <dt>searchId</dt>
+        <dd> Id assigned by the MAR server to the search operation. This property should be preserved (not changed on or deleted from) the message if this node is revisited to return more search results.</dd>
+        <dt>searchNodeId</dt>
+        <dd> Id of this search node instance. This property should be preserved (not changed on or deleted from) the message if this node is revisited to return more search results.</dd>
+    </dl>
+    <h3>Prerequisites</h3>
+    <p>The DXL client invoking this method must have permission to send messages to the <code>/mcafee/mar/search/api/search</code> topic.
+    See the <a href="https://opendxl.github.io/opendxl-client-python/pydoc/marsendauth.html">MAR client authorization documentation</a> for details on authorizing a client to perform MAR searches.</p>
+    <h3>Node Properties</h3>
+    <p><i>Client</i> is the configuration node for the DXL client through which the request should be made.
+    Click on the pencil icon to add or modify a client configuration.</p>
+    <p><i>Name</i> is only used for display purposes in the Node-RED user interface.</p>
+    <p><i>Projections</i> is a JSON-formatted array of objects used to describe the information to collect in the search. If the value is empty, the projections will be derived from the input message's <code>msg.payload</code> property.</p>
+    <p><i>Limit</i> is the maximum number of items to return in the results. If the value is empty, the limit will be derived from the input message's <code>msg.limit</code> property.</p>
+    <p><i>Text filter</i> is a text based filter used to limit the result (this can be any string). If the value is empty, the limit will be derived from the input message's <code>msg.textFilter</code> property.</p>
+    <p><i>Sort by</i> is the field that will be used to sort the results. If the value is empty, the limit will be derived from the input message's <code>msg.sortBy</code> property.</p>
+    <p><i>Sort</i> is the direction the search results should be sorted. If the value is set to <code>Defer to msg.sortBy property</code>, the sort direction will be retrieved from the <code>msg.sortDirection</code> property in the input message.
+    <p><i>Return</i> controls the data type for the <code>msg.payload</code> property in the output message.</p>
+    <p>If an error occurs when attempting to convert the payload into the desired data type, the current flow is halted with an error.</p>
+    <p><i>Poll interval</i> controls the number of seconds between poll requests made to the MAR server to determine when a search is complete.</p>
+    <h3>Details</h3>
+    <p>Execution of a MAR search requires an array of <code>projections</code> and an optional object containing the search <code>conditions</code>.</p>
+    <h4>Projections</h4>
+    <p>"Projections" are used to describe the information to collect in the search. Each <code>projection</code> consists of a <code>collector</code> name and an array of <code>output names</code> from the collector. For example, the <code>Processes</code> collector includes output names such as <code>name</code>, <code>sha1</code>, <code>md5</code>, etc.</p>
+    <p>For a complete list of collectors and their associated output names refer to the "McAfee Active Response Product Guide".
+    <p>Each projection specified must contain the following fields:
+    <ul>
+        <li><code>name</code>: The name of the collector to project</li>
+        <li><code>outputs</code>: An array of output names of the collector to project</li>
+    </ul>
+    <p>The JavaScript object definition below is equivalent to the projections within the following textual search:</p>
+    <pre>Processes name, id where Processes name equals "csrss" and Processes name contains "exe" or Processes size not greater than 200</pre>
+    <pre>[{
+    "name": "Processes",
+    "outputs": ["name", "id"]
+}]</pre>
+    <h4>Conditions</h4>
+    <p>"Conditions" are used to restrict which items are included in the search results. For example, a search that collects process-related information could be limited to those processes which match a specified name.</p>
+    <p>A condition has a fixed structure starting with an <code>or</code> conditional operator and allowing only one level of <code>and</code> conditions.</p>
+    <p>The JavaScript object definition below is equivalent to the projections within the following textual search:</p>
+    <pre>Processes name, id where Processes name equals "csrss" and Processes name contains "exe" or Processes size not greater than 200</pre>
+    <pre>{
+    "or": [{
+        "and": [{
+            "name": "Processes",
+            "output": "name",
+            "op": "EQUALS",
+            "value": "csrss"
+        }, {
+            "name": "Processes",
+            "output": "name",
+            "op": "CONTAINS",
+            "value": "exe"
+        }]
+    }, {
+        "and": [{
+            "name": "Processes",
+            "output": "size",
+            "op": "GREATER_THAN",
+            "value": "200",
+            "negated": "true"
+        }]
+    }]
+}</pre>
+    <p>The following fields are used for each condition:</p>
+    <ul>
+        <li><code>name</code> - The name of the collector from which to retrieve a value for comparison</li>
+        <li><code>output</code> - The output name from the collector that selects the specific value to use for comparison</li>
+        <li><code>op</code>: The comparison operator</li>
+        <li><code>value</code> - The value to compare with the value from the collector</li>
+        <li><code>negated</code> - (optional) Indicates if the comparison is negated</li>
+    </ul>
+    <p>For a list of the operators available for each value data type, see the <a href="https://opendxl.github.io/opendxl-mar-client-python/pydoc/dxlmarclient.client.html" target="_blank">MarClient API documentation</a> in the MAR Python client SDK.</p>
+    <h4>Results</h4>
+    <p>The <code>payload</code> property in the output message should contain an array with an object for each item found in the search. Each search result item should have the following fields:</p>
+    <ul>
+        <li><code>id</code> - The identifier of the item within the search results</li>
+        <li><code>count</code> - The number of times that the search result was reported</li>
+        <li><code>created_at</code> - The item timestamp</li>
+        <li><code>output</code> - The search result data where each key is composed of <code>CollectorName|OutputName</code> and tha correspond to that collector and output name.</li>
+    </ul>
+    <p>An example search result item payload is shown below:</p>
+    <pre>{
+    "id": "{1=[[System Process], 0]}",
+    "count": 2,
+    "created_at": "2016-11-16T22:50:04.650Z",
+    "output": {
+        "Processes|id": 0,
+        "Processes|name": "[System Process]"
+    }
+}</pre>
+    <h4>Paging</h4>
+    <p>Each time an input message is processed by this node, a "page" of search results is returned. The maximum number of items returned for a single page is controlled by the <code>limit</code> property.
+    The value in the <code>offset</code> property controls the position of the first item returned for the page.</p>
+    <p>The <code>hasMoreItems</code> property can be used to determine whether additional result pages could be returned for the active search.</p>
+    <p>For example, a Node-RED <code>switch</code> node downstream from this MAR search node could define a rule which sets this same MAR search node as its output when the <code>msg.hasMoreItems</code> property evaluates to <code>true</code>.
+    Each time that the MAR search node processes the same message within a flow, the next page of search result items should be set to the <code>msg.payload</code> property in the output message.</p>
+    <p>The Node-RED <code>switch</code> node would also need to have a rule which avoids reinvoking the MAR search node when the <code>hasMoreItems</code> property has a value of <code>false</code>, which occurs when no additional items are available to retrieve for the current search.</p>
 </script>
