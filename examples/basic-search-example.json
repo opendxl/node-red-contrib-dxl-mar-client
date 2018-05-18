@@ -1,31 +1,36 @@
 [
     {
-        "id": "ee0ea636.a6a4c8",
+        "id": "ae8196c5.b56c48",
         "type": "tab",
         "label": "MAR Basic Search Example",
         "disabled": false,
-        "info": ""
+        "info": "This sample executes a `McAfee Active Response` search for the IP addresses of\r\nhosts that have an Active Response client installed. The IP addresses found are\r\ndisplayed on the Node-RED `debug` tab.\r\n\r\n### Prerequisites\r\n\r\n* The samples configuration step has been completed (see the\r\n  [DXL Configuration Sample](https://github.com/opendxl/node-red-contrib-dxl/wiki/Client-Configuration)).\r\n* A McAfee Active Response (MAR) service is available on the DXL fabric.\r\n* The DXL client associated with the\r\n`Search MAR for hosts` node has been authorized to perform MAR searches\r\n  (see [Authorize Client to Perform MAR Search](https://opendxl.github.io/opendxl-client-python/pydoc/marsendauth.html)).\r\n\r\n### Setup\r\n\r\nTo deploy the flow, press the `Deploy` button in the upper-right corner of the\r\n  screen. If Node-RED is able to properly connect to the DXL fabric, a green dot\r\n  with the word `connected` should appear under the `Search MAR for hosts` node.\r\n\r\n### Running\r\n\r\nTo exercise the flow, double-click the button on the left side of the\r\n`Specify search projections` node.\r\n\r\n### Output\r\n\r\nThe IP addresses found should appear in the Node-RED `debug` tab. For example:\r\n\r\n~~~\r\n[ \"192.168.130.152\", \"192.168.130.133\"]\r\n~~~\r\n\r\n### Details\r\n\r\nThe flow exercises the nodes below.\r\n\r\n#### Specify search projections\r\n\r\nThis is an `inject` input node which starts the flow. This node injects a new\r\nmessage with a `payload` property which specifies that the IP addresses of\r\nhosts which are found should be projected into the search results:\r\n\r\n```json\r\n[\r\n    {\r\n        \"name\": \"HostInfo\",\r\n        \"outputs\": [\r\n            \"ip_address\"\r\n        ]\r\n    }\r\n]\r\n```\r\n\r\n#### Set projections request parameter\r\n\r\nThis is a `change` node which copies the value from the `payload` property on\r\nthe message to the `projections` property. The `Search MAR for hosts` node uses\r\nthe `projections` property when constructing the parameters for the MAR search. \r\n\r\n#### Search MAR for hosts\r\n\r\nThis is a `mar search` node. This node connects to the DXL fabric and sends a\r\nsearch request to the MAR service using the `msg.projections` property set by\r\nthe `Set projections request parameter` node.\r\n\r\nThe `Limit` property specifies that up to the first \"10\" result items should be\r\nprovided.\r\n\r\nThe `Return` property is set to \"a parsed JSON object\" to indicate that the\r\n`payload` for the response should be added to the output message as a JavaScript\r\nobject decoded from JSON.\r\n\r\n#### Extract host IP addresses\r\n\r\nThis is a `function` node. This node includes a JavaScript code snippet which\r\niterates over the search result items that were set on the `msg.payload`\r\nproperty by the `Search MAR for hosts` node. The source code for the code\r\nsnippet is included below:\r\n\r\n```javascript\r\nmsg.payload = \r\n    msg.payload.map(function (processEntry) {\r\n        return processEntry.output[\"HostInfo|ip_address\"]\r\n    })\r\nreturn msg\r\n```\r\n\r\nThe `HostInfo|ip_address` value for\r\neach item is captured. An array with just the ip addresses of the hosts which\r\nwere returned in the search results is set onto the `msg.payload` property.\r\n\r\n#### Output IP addresses\r\n\r\nThis is a `debug` output node. This node outputs the array of host IP addresses\r\nwritten to the `msg.payload` property by the `Extract host IP addresses` node."
     },
     {
-        "id": "bd0c70b7.aaadb",
+        "id": "8c17321b.e060a",
         "type": "dxl-mar-search",
-        "z": "ee0ea636.a6a4c8",
+        "z": "ae8196c5.b56c48",
         "name": "Search MAR for hosts",
         "pollInterval": 5,
         "client": "",
+        "projections": "",
+        "limit": "10",
+        "textFilter": "",
+        "sortBy": "",
+        "sortDirection": "",
         "returnType": "obj",
         "x": 280,
         "y": 220,
         "wires": [
             [
-                "c1b54574.515d18"
+                "344ecc6a.d7f974"
             ]
         ]
     },
     {
-        "id": "bbc5481.ea420b8",
+        "id": "e2c5d5c.489ea28",
         "type": "inject",
-        "z": "ee0ea636.a6a4c8",
+        "z": "ae8196c5.b56c48",
         "name": "Specify search projections",
         "topic": "",
         "payload": "[{\"name\":\"HostInfo\",\"outputs\":[\"ip_address\"]}]",
@@ -38,45 +43,45 @@
         "y": 40,
         "wires": [
             [
-                "f4b6b364.65f03"
+                "98469ddd.84d2e"
             ]
         ]
     },
     {
-        "id": "8da16f80.4e2ce",
+        "id": "883e69fb.b3d9c8",
         "type": "debug",
-        "z": "ee0ea636.a6a4c8",
-        "name": "Output host names",
+        "z": "ae8196c5.b56c48",
+        "name": "Output IP addresses",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "payload",
-        "x": 590,
-        "y": 320,
+        "x": 460,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "c1b54574.515d18",
+        "id": "344ecc6a.d7f974",
         "type": "function",
-        "z": "ee0ea636.a6a4c8",
-        "name": "Extract host names",
+        "z": "ae8196c5.b56c48",
+        "name": "Extract host IP addresses",
         "func": "msg.payload = \n    msg.payload.map(function (processEntry) {\n        return processEntry.output[\"HostInfo|ip_address\"]\n    })\nreturn msg",
         "outputs": 1,
         "noerr": 0,
-        "x": 370,
+        "x": 390,
         "y": 320,
         "wires": [
             [
-                "8da16f80.4e2ce"
+                "883e69fb.b3d9c8"
             ]
         ]
     },
     {
-        "id": "f4b6b364.65f03",
+        "id": "98469ddd.84d2e",
         "type": "change",
-        "z": "ee0ea636.a6a4c8",
-        "name": "Set projection request parameter",
+        "z": "ae8196c5.b56c48",
+        "name": "Set projections request parameter",
         "rules": [
             {
                 "t": "set",
@@ -95,7 +100,7 @@
         "y": 120,
         "wires": [
             [
-                "bd0c70b7.aaadb"
+                "8c17321b.e060a"
             ]
         ]
     }
