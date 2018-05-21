@@ -4,10 +4,7 @@
     defaults: {
       name: {value: ''},
       pollInterval: {value: 5, validate: RED.validators.number()},
-      client: {type: 'dxl-client',
-        required: false,
-        validate: function () { return DXL.validators.client(this) }
-      },
+      client: {type: 'dxl-client', required: true},
       projections: {value: ''},
       limit: {value : '', validate: RED.validators.number(true)},
       textFilter: {value: ''},
