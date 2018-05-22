@@ -9,10 +9,9 @@ var NodeUtils = nodeRedDxl.NodeUtils
 
 module.exports = function (RED) {
   function clearSearchResultProperties (msg) {
-    delete msg.offset
-    delete msg.limit
-    delete msg.searchId
-    delete msg.searchNodeId
+    NodeUtils.removeProperties(msg,
+      ['offset', 'limit', 'textFilter', 'sortBy', 'sortDirection',
+        'searchId', 'searchNodeId'])
   }
 
   function sendError (node, msg, errorMessage) {
@@ -98,7 +97,8 @@ module.exports = function (RED) {
       }
       this.on('input', function (msg) {
         var projections = NodeUtils.defaultIfEmpty(node._projections,
-          msg.projections)
+          NodeUtils.extractProperty(msg, 'projections'))
+        var conditions = NodeUtils.extractProperty(msg, 'conditions')
         if (msg.searchNodeId === node.id) {
           var resultsContext = new ResultsContext(marClient,
             msg.searchId, msg.resultCount, msg.errorCount, msg.errorCount,
@@ -107,10 +107,8 @@ module.exports = function (RED) {
         } else if (projections) {
           msg.offset = 0
           msg.hasMoreItems = false
-          marClient.search(projections, msg.conditions,
+          marClient.search(projections, conditions,
             function (searchError, resultsContext) {
-              delete msg.projections
-              delete msg.conditions
               if (resultsContext) {
                 msg.searchId = resultsContext.searchId
                 msg.resultCount = resultsContext.resultCount

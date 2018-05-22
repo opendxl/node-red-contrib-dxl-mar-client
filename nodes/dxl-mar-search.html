@@ -148,6 +148,7 @@
         <dt>searchNodeId</dt>
         <dd> Id of this search node instance. This property should be preserved (not changed on or deleted from) the message if this node is revisited to return more search results.</dd>
     </dl>
+    <p>The <code>projections</code> and <code>conditions</code> properties are removed, if present, from the output message. If an error occurs or if <code>hasMoreItems</code> has a value of <code>false</code>, the following additional properties are removed, if present, from the output message: <code>offset</code>, <code>limit</code>, <code>textFilter</code>, <code>sortBy</code>, <code>sortDirection</code>, <code>searchId</code>, <code>searchNodeId</code>.</p>
     <h3>Prerequisites</h3>
     <p>The DXL client that this node is using must have permission to send messages to the <code>/mcafee/mar/search/api/search</code> topic.
     See the <a href="https://opendxl.github.io/opendxl-client-python/pydoc/marsendauth.html">MAR client authorization documentation</a> for details on authorizing a client to perform MAR searches.</p>
