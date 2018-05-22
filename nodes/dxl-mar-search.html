@@ -6,7 +6,7 @@
       pollInterval: {value: 5, validate: RED.validators.number()},
       client: {type: 'dxl-client', required: true},
       projections: {value: ''},
-      limit: {value : '', validate: RED.validators.number(true)},
+      limit: {value: '', validate: RED.validators.number(true)},
       textFilter: {value: ''},
       sortBy: {value: ''},
       sortDirection: {value: ''},
@@ -30,28 +30,28 @@
       this.editor = RED.editor.createEditor({
         id: 'node-input-projections-editor',
         mode: 'ace/mode/json',
-        value: $("#node-input-projections").val()
-      });
+        value: $('#node-input-projections').val()
+      })
     },
-    oneditsave: function() {
-      $("#node-input-projections").val(this.editor.getValue());
-      this.editor.destroy();
-      delete this.editor;
+    oneditsave: function () {
+      $('#node-input-projections').val(this.editor.getValue())
+      this.editor.destroy()
+      delete this.editor
     },
-    oneditcancel: function() {
-      this.editor.destroy();
-      delete this.editor;
+    oneditcancel: function () {
+      this.editor.destroy()
+      delete this.editor
     },
-    oneditresize: function(size) {
-      var rows = $("#dialog-form>div:not(.node-text-editor-row)");
-      var height = $("#dialog-form").height();
-      for (var i=0; i<rows.size(); i++) {
-        height -= $(rows[i]).outerHeight(true);
+    oneditresize: function (size) {
+      var rows = $('#dialog-form>div:not(.node-text-editor-row)')
+      var height = $('#dialog-form').height()
+      for (var i = 0; i < rows.size(); i++) {
+        height -= $(rows[i]).outerHeight(true)
       }
-      var editorRow = $("#dialog-form>div.node-text-editor-row");
-      height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-      $(".node-text-editor").css("height",height+"px");
-      this.editor.resize();
+      var editorRow = $('#dialog-form>div.node-text-editor-row')
+      height -= (parseInt(editorRow.css('marginTop')) + parseInt(editorRow.css('marginBottom')))
+      $('.node-text-editor').css('height', height + 'px')
+      this.editor.resize()
     },
     paletteLabel: 'mar search'
   })
