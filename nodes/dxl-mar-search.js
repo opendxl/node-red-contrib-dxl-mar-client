@@ -41,11 +41,15 @@ module.exports = function (RED) {
             sendError(node, msg, resultError.message)
           }
         },
-        msg.offset,
-        NodeUtils.valueToNumber(nodeConfig.limit, msg.limit),
-        NodeUtils.defaultIfEmpty(nodeConfig.textFilter, msg.textFilter),
-        NodeUtils.defaultIfEmpty(nodeConfig.sortBy, msg.sortBy),
-        NodeUtils.defaultIfEmpty(nodeConfig.sortDirection, msg.sortDirection)
+        {
+          offset: msg.offset,
+          limit: NodeUtils.valueToNumber(nodeConfig.limit, msg.limit),
+          textFilter: NodeUtils.defaultIfEmpty(nodeConfig.textFilter,
+            msg.textFilter),
+          sortBy: NodeUtils.defaultIfEmpty(nodeConfig.sortBy, msg.sortBy),
+          sortDirection: NodeUtils.defaultIfEmpty(nodeConfig.sortDirection,
+            msg.sortDirection)
+        }
       )
     }
   }
