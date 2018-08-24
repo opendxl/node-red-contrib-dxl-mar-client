@@ -28,11 +28,14 @@
     "@opendxl/dxl-mar-client": "^0.1.0"
   },
   "devDependencies": {
+    "archiver": "^2.1.1",
+    "jsdoc": "^3.5.5",
     "jshint": "^2.9.5",
     "eslint-plugin-html": "^3.2.2",
     "mocha": "^4.1.0",
     "node-red": "^0.18.0",
     "node-red-node-test-helper": "^0.1.8",
+    "rimraf": "^2.6.2",
     "should": "^13.2.1",
     "standard": "^10.0.3",
     "snazzy": "^7.0.0"
@@ -48,19 +51,22 @@
     }
   },
   "scripts": {
+    "predist": "npm install && rimraf *.tgz",
+    "dist": "npm pack && npm run doc && node scripts/dist.js",
     "test": "mocha --recursive",
     "lint": "npm run lint:jshint && npm run lint:standard",
-    "lint:jshint": "jshint test",
+    "lint:jshint": "jshint nodes test",
     "lint:standard": "standard \"**/*.html\" \"**/*.js\" | snazzy",
     "preci": "npm run lint",
-    "ci": "npm run test"
+    "ci": "npm run test",
+    "doc": "jsdoc -c ./doc/conf.json doc/index.md -r nodes/ -u doc/sdk -d out/jsdoc",
+    "postdoc": "node scripts/postdoc.js"
   },
   "standard": {
     "env": [
       "mocha"
     ],
     "globals": [
-      "DXL",
       "RED",
       "$"
     ],

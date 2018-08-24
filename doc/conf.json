@@ -1,0 +1,14 @@
+{
+  "plugins": ["plugins/markdown"],
+  "markdown": {
+    "idInHeadings": true
+  },
+  "templates": {
+    "default": {
+      "includeDate": false,
+      "staticFiles": {
+        "include": ["doc/sdk/static/"]
+      }
+    }
+  }
+}
