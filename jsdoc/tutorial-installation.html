@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Library Installation</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Library Installation</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Library Installation</h2>
+</header>
+
+<article>
+    <h3 id="prerequisites">Prerequisites</h3>
+<p>To use the McAfee Active Response (MAR) DXL Node-RED client package, the
+following prerequisites must be satisfied:</p>
+<ul>
+<li><p>Node-RED must be installed.</p>
+<p>The <a href="https://github.com/opendxl/opendxl-node-red-docker">OpenDXL Node-RED Docker</a>
+repository provides instructions on how to create a Node-RED container in
+<a href="https://www.docker.com/">Docker</a>.</p>
+<p>For more information on other Node-RED installation approaches, see
+<a href="https://nodered.org/docs/getting-started/installation">https://nodered.org/docs/getting-started/installation</a>.</p>
+<blockquote>
+<p><strong>Note</strong>: In order to be able to import examples properly from the Node-RED
+UI, version 0.18.0 or newer of Node-RED should be installed.</p>
+</blockquote>
+</li>
+<li><p>The <a href="https://github.com/opendxl/node-red-contrib-dxl">OpenDXL Node-RED</a> core
+package must be installed in Node-RED.</p>
+<blockquote>
+<p><strong>Note</strong>: If you use the
+<a href="https://github.com/opendxl/opendxl-node-red-docker">OpenDXL Node-RED Docker</a>
+image, the OpenDXL Node-RED core package should be installed automatically
+on the first run of the Docker container.</p>
+</blockquote>
+</li>
+<li><p>McAfee Active Response Server installed and available on DXL fabric</p>
+<ul>
+<li><a href="https://www.mcafee.com/enterprise/en-us/products/active-response.html">https://www.mcafee.com/enterprise/en-us/products/active-response.html</a></li>
+</ul>
+</li>
+<li><p>DXL client has been configured in Node-RED.</p>
+<ul>
+<li><a href="https://opendxl.github.io/node-red-contrib-dxl/jsdoc/tutorial-configuration.html">https://opendxl.github.io/node-red-contrib-dxl/jsdoc/tutorial-configuration.html</a></li>
+</ul>
+</li>
+<li><p>Node.js 4.0 or higher installed.</p>
+</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<p>The MAR DXL Node-RED client package can be installed via the following
+approaches:</p>
+<ul>
+<li><p>Node-RED Based</p>
+<p>With this approach, the MAR DXL Node-RED client package is installed from
+within Node-RED itself. See the
+<a href="#node-red-based-installation">Node-RED Based Installation</a> section below for
+more information.</p>
+</li>
+<li><p>Command Line Installation</p>
+<p>With this approach, the MAR DXL Node-RED client package is installed via
+<a href="https://docs.npmjs.com/">npm</a> from the command-line on the host where the
+Node-RED server is running. See the
+<a href="#command-line-installation">Command Line Installation</a> section below for more
+information.</p>
+</li>
+</ul>
+<h4 id="node-red-based-installation">Node-RED Based Installation</h4>
+<ol>
+<li><p>Browse to your Node-RED server.</p>
+</li>
+<li><p>In the upper-right corner, press the side menu button.</p>
+</li>
+<li><p>Choose the <code>Manage palette</code> option in the menu drop-down list.</p>
+</li>
+<li><p>From the <code>Palette</code> user settings tab, click on the <code>Install</code> tab.</p>
+</li>
+<li><p>In the <code>search modules</code> text box, enter <code>dxl-mar</code>.</p>
+</li>
+<li><p>Next to the entry for <code>@opendxl/node-red-contrib-dxl-mar-client</code> in the
+search results, press the <code>install</code> button.</p>
+</li>
+<li><p>On the <code>Installing</code> confirmation dialog, press the <code>Install</code> button.</p>
+<p>A dialog containing text like the following should appear when the
+installation is complete:</p>
+<pre class="prettyprint source"><code>Nodes added to palette:
+
+* dxl-mar...</code></pre></li>
+<li><p>Click on the <code>Close</code> button to close the <code>User Settings</code> tab.</p>
+</li>
+</ol>
+<h4 id="command-line-installation">Command Line Installation</h4>
+<p>Before installing the MAR DXL Node-RED client package, first navigate in a
+command shell to the user directory which you have configured for Node-RED. The
+<code>.node-red</code> directory under the user's <code>HOME</code> directory is the default user
+directory for Node-RED.</p>
+<p>For Mac and Linux-based operating systems, run the following command:</p>
+<pre class="prettyprint source lang-sh"><code>cd ~/.node-red</code></pre><p>For Windows, run the following command:</p>
+<pre class="prettyprint source lang-sh"><code>cd %HOMEPATH%\.node-red</code></pre><p>To install the library from a local tarball for a Mac or Linux-based operating
+system, run the following command:</p>
+<pre class="prettyprint source lang-sh"><code>npm install ./lib/opendxl-node-red-contrib-dxl-mar-client-0.1.0.tgz --save</code></pre><p>To install the library from a local tarball for Windows, run:</p>
+<pre class="prettyprint source lang-sh"><code>npm install .\lib\opendxl-node-red-contrib-dxl-mar-client-0.1.0.tgz --save</code></pre><p>To install the library via the
+<a href="https://www.npmjs.com/package/@opendxl/node-red-contrib-dxl-mar-client">npm package registry</a>,
+run the following command:</p>
+<pre class="prettyprint source lang-sh"><code>npm install @opendxl/node-red-contrib-dxl-mar-client --save</code></pre><p>After the installation is complete, restart Node-RED and browse to your
+Node-RED server.</p>
+<h4 id="confirming-the-installation-result">Confirming the Installation Result</h4>
+<p>After the installation is complete, you should see a <code>mar search</code> node in the
+left column:</p>
+<p><img src="images/mar-operations-nodes.png" alt="McAfee Active Response (MAR) Operations Nodes"></p>
+<p>For more information, see the
+<a href="https://nodered.org/docs/configuration">Node-RED Configuration</a> documentation.</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-installation.html">Library Installation</a></li><li><a href="tutorial-samples.html">Samples</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
