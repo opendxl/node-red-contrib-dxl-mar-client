@@ -24,11 +24,16 @@ following prerequisites must be satisfied:
   > on the first run of the Docker container.
 
 * McAfee Active Response Server installed and available on DXL fabric
+
   * <https://www.mcafee.com/enterprise/en-us/products/active-response.html>
 
 * DXL client has been configured in Node-RED.
 
   * <https://opendxl.github.io/node-red-contrib-dxl/jsdoc/tutorial-configuration.html>
+
+* Node-RED DXL client has permission to perform MAR searches.
+
+  * <https://opendxl.github.io/opendxl-client-python/pydoc/marsendauth.html>
 
 * Node.js 4.0 or higher installed.
 
